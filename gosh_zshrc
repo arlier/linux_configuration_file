@@ -1,0 +1,171 @@
+export SAVEHIST=1000
+export HISTSIZE=1000
+export HISTFILE=~/.zhistory
+
+export PATH=$PATH:~/.local/bin
+export LD_LIBRARY_PATH=~/work/root/lib
+
+alias t="tmux"
+alias tl="tmux list-sessions"
+alias ta="tmux attach -t"
+
+alias v="DISPLAY= vim"
+alias vv="DISPLAY= sudo vim"
+alias gv="gvim"
+
+alias e="DISPLAY= emacsclient"
+alias ee="DISPLAY= sudo emacsclient"
+alias ge="emacsclient -c"
+
+alias aa="cd /tmp/ram"
+alias ll="ls -aghot --color=auto"
+alias gg="grep --color=auto -rin"
+
+alias ls="ls --color=auto"
+alias grep="grep --color=auto"
+
+alias ps="ps x"
+alias pg="ps x | grep"
+alias mren="md5sum * | sed -e 's/\([^ ]*\) \(.*\(\..*\)\)$/mv -v \2 \1\3/e'"
+
+alias pac="sudo pacman"
+alias pacs="sudo pacman -S"
+alias pacr="sudo pacman -Rsn"
+alias pacf="pacman -Ss"
+alias paco="pacman -Qo"
+
+alias oo="root -l"
+alias ooo="root -l -q"
+alias oob="root -l -b"
+alias oop="root -l -b -q"
+
+alias cx="clang++ -std=c++14 -fno-elide-constructors -Wall"
+alias cf="clang-format -style='{BasedOnStyle: LLVM, AccessModifierOffset: -4, SpaceBeforeParens: Never, IndentWidth: 4, TabWidth: 4, UseTab: Always}'"
+
+alias gp="gnuplot"
+
+ff() {
+    [[ $# -ge 1 ]] && find . -name "*$1*"
+}
+
+gh() {
+    [[ $# -lt 1 ]] && return
+
+    out=(`git branch 2>&1`)
+    if [[ ${out[1]} = '*' && -n "$*" ]]; then
+        git add -A
+        git commit -m "$*"
+        git push origin ${out[2]}
+    fi
+}
+
+rh() {
+    [[ $# -lt 1 ]] && return
+    [[ -n $2 ]] && arg="--stylesheet=${2}.css" \
+
+    rst2html \
+        --no-generator \
+        --math-output=MathJax \
+        --link-stylesheet \
+        ${arg} "${1}.rst" "${1}.html"
+}
+
+rt() {
+    [[ $# -lt 1 ]] && return
+    [[ -n $2 ]] && arg="--stylesheet=${2}.tex" \
+
+    rst2xetex \
+        --no-generator \
+        --link-stylesheet \
+        --latex-preamble="" \
+        ${arg} "${1}.rst" "${1}.tex"
+}
+
+ch() {
+    exec systemd-nspawn \
+        --directory=${1:-/mnt} \
+        --capability=all \
+        --bind=/tmp:/tmp \
+        --bind=/run:/run \
+        --bind=/opt:/opt \
+        --user=gosh \
+        --setenv=DISPLAY=$DISPLAY \
+        /bin/zsh
+}
+
+setopt APPEND_HISTORY
+setopt AUTO_CD
+setopt AUTO_LIST
+setopt AUTO_MENU
+setopt AUTO_PARAM_KEYS
+setopt AUTO_PARAM_SLASH
+setopt AUTO_PUSHD
+setopt BRACE_CCL
+setopt CDABLE_VARS
+setopt COMPLETE_IN_WORD
+setopt COMPLETE_ALIASES
+setopt CORRECT
+setopt GLOB_DOTS
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt HIST_SAVE_NO_DUPS
+setopt IGNORE_EOF
+setopt INTERACTIVE_COMMENTS
+setopt KSH_TYPESET
+setopt LIST_TYPES
+setopt MENU_COMPLETE
+setopt MULTIOS
+setopt NO_HIST_BEEP
+setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT
+setopt PUSHD_TO_HOME
+
+limit coredumpsize 0
+
+PROMPT="%{[38;5;147m%}%~%{[38;5;68m%} >>> %{[0m%}"
+
+bindkey -v
+bindkey "[A"  history-beginning-search-backward
+bindkey "[B"  history-beginning-search-forward
+bindkey "[C"  forward-char 
+bindkey "[D"  backward-char
+bindkey "[1~" beginning-of-line
+bindkey "[2~" backward-delete-word
+bindkey "[3~" delete-char
+bindkey "[4~" end-of-line
+bindkey "[5~" backward-word
+bindkey "[6~" forward-word
+bindkey "[H"  beginning-of-line
+bindkey "[F"  end-of-line
+
+autoload -Uz compinit
+compinit
+
+zstyle ":completion:*" completer _complete _prefix _correct _prefix _match _approximate
+zstyle ":completion:*" expand "yes"
+zstyle ":completion:*" group-name ""
+zstyle ":completion:*" matcher-list "" "m:{a-zA-Z}={A-Za-z}"
+zstyle ":completion:*" menu select
+zstyle ":completion:*" squeeze-slashes "yes"
+zstyle ":completion:*" verbose yes
+zstyle ":completion:*:approximate:*" max-errors 1 numeric
+zstyle ":completion:*:matches" group "yes"
+zstyle ":completion:*:match:*" original only
+zstyle ":completion:*:options" auto-description "%d"
+zstyle ":completion:*:options" description "yes"
+zstyle ":completion:*:processes" command "ps -au$USER"
+zstyle ":completion:*:*:default" force-list always
+zstyle ":completion:*:*:kill:*" menu yes select
+zstyle ":completion:*:*:*:default" menu yes select
+zstyle ":completion:*:*:*:*:processes" force-list always
+zstyle ":completion::complete:*" "\\"
+zstyle ":completion::prefix-1:*" completer _complete
+zstyle ":completion:incremental:*" completer _complete _correct
+zstyle ":completion:predict:*" completer _complete
+zstyle ":completion:*:corrections" format $"[38;5;147m >>> [38;5;68m%d (%e)[0m"
+zstyle ":completion:*:descriptions" format $"[38;5;147m >>> [38;5;68m%d[0m"
+zstyle ":completion:*:messages" format $"[38;5;147m >>> [38;5;68m%d[0m"
+zstyle ":completion:*:warnings" format $"[38;5;147m >>> [38;5;68mnot found[0m"
+zstyle ":completion:*:*:kill:*:processes" list-colors "=(#b) #([0-9]#)*=0=38;5;147"
