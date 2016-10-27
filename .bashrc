@@ -116,6 +116,10 @@ alias lt='ls -ltr'
 # 关闭命令执行出错报警铃声
 # 注 在inputrc文件中设置 set bell-style none用于关闭shell（例如自动补全失败）的告警铃声
 setterm -blength 0
+#arlier scrpts
+alias ssh0='ssh -Y zhaor@lxs
+alias cd0='cd /junofs/users/zhaor/junoinstall'
+
 #PS1 set
 PS1="\[\033[0;37m\]\342\224\214\342\224\200\$([[ \$? != 0 ]] && echo \"[\[\033[0;31m\]\342\234\227\[\033[0;37m\]]\342\224\200\")[$(if [[ ${EUID} == 0 ]]; then echo '\[\033[0;31m\]\h'; else echo '\[\033[0;33m\]\u\[\033[0;37m\]@\[\033[0;96m\]\h'; fi)\[\033[0;37m\]]\342\224\200[\[\033[0;32m\]\w\[\033[0;37m\]]\n\[\033[0;37m\]\342\224\224\342\224\200\342\224\200\342\225\274 \[\033[0m\]"
 #end
